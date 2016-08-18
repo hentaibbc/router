@@ -41,7 +41,7 @@ class Loader
         if (strpos($class, self::NS) === 0) {
             $dir = dirname(__FILE__);
             $path = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, strlen(self::NS))).'.php';
-            $path = $dir.'/'.$path;
+            $path = $dir.'/src/'.$path;
             if (file_exists($path)) {
                 require $path;
             }

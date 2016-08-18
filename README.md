@@ -4,12 +4,12 @@
 ## Usage
 使用有下例兩種方式：
 
-### Loader.php
+### 引用 Loader.php
 ```PHP
 include 'path/to/file/Loader.php';
 ```
 
-### Composer
+### 透過 Composer
 ```bash
-composer require henlibs/router
+$composer require henlibs/router
 ```
