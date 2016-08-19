@@ -1,7 +1,7 @@
 {
     "name": "henlibs/router",
     "type": "library",
-    "description": "henlibs router is a simple router flow written in PHP.",
+    "description": "Henlibs router is a simple router flow written in PHP.",
     "keywords": ["router", "php"],
     "license": [
         "MIT"

@@ -53,6 +53,16 @@ class RouterRole
     }
 
     /**
+     * 取得集合物件.
+     *
+     * @return object
+     */
+    public function getCollection()
+    {
+        return $this->collection;
+    }
+
+    /**
      * 工廠方法.
      *
      * @param object   $collection 集合物件
@@ -237,7 +247,7 @@ class RouterRole
      */
     public function getArg($name)
     {
-        return $this->args[$name] ?: null;
+        return isset($this->args[$name]) ? $this->args[$name] : null;
     }
 
     /**
@@ -253,6 +263,15 @@ class RouterRole
         $url = $this->uriTemplate;
 
         $tmpParams = array_merge($this->args, $args);
+        if (count($this->argConfs)) {
+            foreach ($this->argConfs as $conf) {
+                if (isset($tmpParams[$conf['name']])) {
+                    if (!preg_match('#^'.$conf['preg'].'$#', $tmpParams[$conf['name']])) {
+                        throw new ErrorException(sprintf('Type of argument "%s" is invalid', $conf['name']));
+                    }
+                }
+            }
+        }
         // 利用現有的 router 去補共用資料
         if ($router instanceof self) {
             $ary = $router->getArgs();
@@ -273,9 +292,6 @@ class RouterRole
         }
 
         $returnUrl = $url.(count($args) ? '?'.http_build_query($args) : '');
-        if ($result) {
-            $returnUrl = $result;
-        }
 
         return $returnUrl;
     }
@@ -290,6 +306,7 @@ class RouterRole
         $names = array();
         $matchString = preg_replace_callback('#\{((i|s):)?([a-zA-Z0-9_]+[\?]?)\}#', function ($matches) use ($names) {
             $varName = $matches[3];
+            $nullable = false;
             if (substr($varName, -1) == '?') {
                 $nullable = true;
                 $varName = substr($varName, 0, -1);

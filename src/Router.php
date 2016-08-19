@@ -14,10 +14,8 @@ use ErrorException;
  */
 class Router
 {
-    /** @var object 唯一實體 */
-    private static $instance;
     /** @var array Role 集合 */
-    private static $roles = array('src' => array(), 'alias' => array(), 'hash' => array(), 'current' => null);
+    private $roles = array('src' => array(), 'alias' => array(), 'hash' => array(), 'current' => null);
 
     /**
      * 工廠方法.
@@ -26,11 +24,7 @@ class Router
      */
     public static function getInstance()
     {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
+        return new self();
     }
 
     /**
@@ -41,10 +35,10 @@ class Router
      */
     public function addAlias($alias, $role)
     {
-        if (self::$roles['alias'][$alias]) {
+        if (isset($this->roles['alias'][$alias])) {
             throw new ErrorException(sprintf('Router alias %s already exists', $alias));
         }
-        self::$roles['alias'][$alias] = $role;
+        $this->roles['alias'][$alias] = $role;
     }
 
     /**
@@ -59,7 +53,7 @@ class Router
     {
         $role = RouterRoleGroup::getInstance($this, $uri, $action);
 
-        self::$roles['src'][] = $role;
+        $this->roles['src'][] = $role;
         if ($alias) {
             $this->addAlias($alias, $role);
         }
@@ -87,7 +81,7 @@ class Router
         // Validate if already exists
         $this->validate($role);
 
-        self::$roles['src'][] = $role;
+        $this->roles['src'][] = $role;
         if ($alias) {
             $this->addAlias($alias, $role);
         }
@@ -116,10 +110,10 @@ class Router
      */
     public function validate($role)
     {
-        if (isset(self::$roles['hash'][$role->getHash()])) {
+        if (isset($this->roles['hash'][$role->getHash()])) {
             throw new ErrorException(sprintf('Router "%s" already exists', $role->getRule()));
         }
-        self::$roles['hash'][$role->getHash()] = true;
+        $this->roles['hash'][$role->getHash()] = true;
     }
 
     /**
@@ -131,7 +125,7 @@ class Router
      */
     public function setRole($role)
     {
-        self::$roles['current'] = $role;
+        $this->roles['current'] = $role;
 
         return $this;
     }
@@ -146,14 +140,14 @@ class Router
     public function get($alias = null)
     {
         if ($alias === null) {
-            return self::$roles['current'];
+            return $this->roles['current'];
         }
 
-        if (!self::$roles['alias'][$alias]) {
+        if (!$this->roles['alias'][$alias]) {
             throw new ErrorException(sprintf('Router alias "%s" is not exists', $alias));
         }
 
-        return self::$roles['alias'][$alias] ?: null;
+        return $this->roles['alias'][$alias] ?: null;
     }
 
     /**
@@ -184,7 +178,7 @@ class Router
      */
     private function mapping($uri)
     {
-        foreach (self::$roles['src'] as $role) {
+        foreach ($this->roles['src'] as $role) {
             if ($role->match($uri)) {
                 return $role->setUri($uri);
             }
@@ -198,7 +192,7 @@ class Router
      */
     private function sortRoles()
     {
-        usort(self::$roles['src'], function ($role, $roleComp) {
+        usort($this->roles['src'], function ($role, $roleComp) {
             if ($role->getLayer() == $roleComp->getLayer()) {
                 return 0;
             }

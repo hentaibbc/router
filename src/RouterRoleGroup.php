@@ -15,7 +15,7 @@ use ErrorException;
 class RouterRoleGroup extends RouterRole
 {
     /** @var array Group 集合 */
-    private static $groupRoles = array();
+    private $groupRoles = array();
     /** @var array Role 集合 */
     private $roles = array('src' => array(), 'alias' => array());
     /** @var array Action 集合 */
@@ -50,16 +50,7 @@ class RouterRoleGroup extends RouterRole
      */
     public static function getInstance($collection, $uri, $action = null)
     {
-        $role = new self($collection, $uri, $action);
-        $hash = $role->getHash();
-
-        if (!isset(self::$groupRoles[$hash])) {
-            self::$groupRoles[$hash] = $role;
-        } else {
-            unset($role);
-        }
-
-        return self::$groupRoles[$hash];
+        return new self($collection, $uri, $action);
     }
 
     /**
