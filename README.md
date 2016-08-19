@@ -12,12 +12,12 @@ include 'path/to/Loader.php';
 Router 共有兩種主要的註冊方法
 
 * 註冊節點: RouterRole
-```
+```PHP
 public function add(string $uri, callable $action, string $alias = null) {}
 ```
 
 * 註冊節點群: RouterRoleGroup
-```
+```PHP
 public function addGroup(string $uri, callable $action, string $alias = null, callable $registerFun = null) {}
 ```
 
