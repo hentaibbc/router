@@ -1,0 +1,27 @@
+{
+    "name": "henlibs/router",
+    "type": "library",
+    "description": "Henlibs router is a simple router flow written in PHP.",
+    "keywords": ["router", "php"],
+    "license": [
+        "MIT"
+    ],
+    "authors": [
+        {
+            "name": "Tatsuya Tseng",
+            "email": "c298943@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "henlibs\\router\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "henlibs\\router\\Test\\": "tests/" }
+    },
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~3.7"
+    }
+}
